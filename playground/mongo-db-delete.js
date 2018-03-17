@@ -18,7 +18,7 @@ MongoClient.connect('mongodb://localhost:27017/TestApp', (err, client) =>{
     //findOneAndDelete
     /*db.collection('Todos').findOneAndDelete({text: 'Eat lunch'}).then((res) => {
         console.log(res);
-    });*/
+    }); */
 
     db.collection('Users').findOneAndDelete({_id: new ObjectID('5aad5f943f0103e456985b7b')}).then((res) => {
         console.log(res);
