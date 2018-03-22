@@ -6,16 +6,17 @@ MongoClient.connect('mongodb://localhost:27017/TestApp', (err, client) =>{
     }
     console.log('Connected to Mongo DB TodoApp');
     const db = client.db('TodoApp');
-   /* db.collection('Todos').insertOne({
+
+
+   /*db.collection('Users').insertOne({
        text: 'A lot to do!',
        completed: false
-    }, (err, result) => {
-        if (err) {
-            return console.log('Unable to inset!');
-        }
-        console.log(JSON.stringify(result.ops, undefined, 2));
-    });
-    */
+    }).then((user) => {
+       console.log(JSON.stringify(user, undefined, 2));
+   }, (e) => {
+       return console.log('Unable to inset user', e);
+   });*/
+
     db.collection('Users').insertOne({
         name: 'Sergi',
         age: 27,
