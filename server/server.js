@@ -22,6 +22,15 @@ app.post('/Todos', (req, res) => {
 
 });
 
+app.get('/Todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.send({todos});
+    }, (err) => {
+        res.status(400).send(err);
+    });
+
+});
+
 app.listen(3000, ()=>{
    console.log('Starting server on 3000...');
 });
