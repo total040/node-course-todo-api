@@ -232,11 +232,62 @@ describe('POST /Users', () => {
         var password = 'serpass!';
         request(app)
             .post('/Users')
-            .send({users[0].email, password})
+            .send({email: users[0].email, password})
             .expect(400)
             .expect((res) => {
                 expect(res.body.code).toEqual(11000);
             })
             .end(done);
     });
+});
+
+describe('POST /Users/login', () => {
+    it ('should login user and return a token', (done) => {
+        request(app)
+            .post('/Users/login')
+            .send({
+                email : users[1].email,
+                password: users[1].password
+                })
+            .expect(200)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toBeTruthy();
+                expect(res.body.email).toBeTruthy();
+                expect(res.body._id).toBeTruthy();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                } else {
+                    User.findById(users[1]._id).then((user) => {
+                        expect(user.tokens[0].token).toBe(res.headers['x-auth']);
+                        done();
+                    }).catch((e) => done(e));
+                }
+            });
+    });
+
+    it ('should return a login error when invalid data', (done) => {
+        request(app)
+            .post('/Users/login')
+            .send({
+                email : users[0].email,
+                password: users[0].password + '--'
+            })
+            .expect(400)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toBeFalsy();
+            })
+            .end((err) => {
+                if (err) {
+                    return done(err);
+                } else {
+                    User.findById(users[0]._id).then((user) => {
+                        expect(user.tokens[0].length).toBeUndefined();
+                        done();
+                    }).catch((e) => done(e));
+                }
+            });
+    });
+
 });

@@ -110,10 +110,30 @@ app.post('/Users', (req, res) => {
     });
 });
 
+app.post('/Users/login', (req, res) => {
+    const reqUser = _.pick(req.body, ['email', 'password']);
+
+    User.findByCredentials(reqUser.email, reqUser.password).then((user) => {
+        return user.generateAuthToken().then((token) => {
+            res.header('x-auth', token).send(user);
+        });
+    }).catch((err) => {
+        res.status(400).send(err);
+    });
+});
+
 
 
 app.get('/Users/me', authenticate, (req, res) => {
     res.send(req.user);
+});
+
+app.delete('/Users/me/token', authenticate, (req, res) => {
+   req.user.removeToken(req.token).then(() => {
+      res.status(200).send();
+   }, () => {
+       res.status(400).send();
+   });
 });
 
 app.listen(port, ()=>{
